@@ -1,7 +1,10 @@
+# Endpoint and credentials come from the OVH_* environment variables.
+provider "ovh" {}
+
 module "valkey" {
   source = "../../"
 
-  service_name   = "your-ovh-project-id"
+  service_name   = var.service_name
   valkey_version = "8.1"
   valkey_plan    = "essential"
   valkey_flavor  = "b3-8"
@@ -12,12 +15,4 @@ module "valkey" {
   ]
 
   create_valkey_users = false
-}
-
-output "valkey_id" {
-  value = module.valkey.valkey_id
-}
-
-output "endpoints" {
-  value = module.valkey.valkey_endpoints
 }

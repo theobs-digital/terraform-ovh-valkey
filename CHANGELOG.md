@@ -1,9 +1,27 @@
 # Changelog
 
-All notable changes to this module will be documented in this file.
+All notable changes to this module are documented in this file.
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/),
-and this project adheres to [Semantic Versioning](https://semver.org/).
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
+and this module adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [Unreleased]
+
+### Fixed
+
+- Provider `ovh/ovh` `~> 2.8`, was `>= 1.0, < 2.0`: `ovh_cloud_project_database_valkey_user` exists only from 2.4.0 and the `deletion_protection` attribute of `ovh_cloud_project_database` from 2.8.0, so 1.0.0 validated with no provider release it allowed
+- Terraform 1.3 to 1.11: a call without `valkey_disk_size` failed, because `||` evaluated `floor()` on `null` too; Terraform evaluates only one side since 1.12
+- Tests: they configured the real provider, which a plan cannot use without credentials, and now run on `mock_provider`; the duplicate user names test gave two different names
+
+### Added
+
+- `LICENSE` (MIT), `.tflint.hcl`, and the workflow `Checks`: the pre-commit hooks and the mock tests on every pull request and push to `main`, and a validation with Terraform 1.3.10 and provider 2.8.0, the bottom of the requirements
+- `versions.tf`, `variables.tf`, `outputs.tf` and a README in each example, which configures the provider
+
+### Changed
+
+- README: a Requirements table with the releases the module was checked with, the terraform-docs reference generated from the code instead of written by hand, and the module taken from `github.com/theobs-digital`, not GitLab
+- pre-commit-terraform v1.109.2; the terraform-docs reference lists types as HCL blocks
 
 ## [1.0.0] - 2026-04-02
 

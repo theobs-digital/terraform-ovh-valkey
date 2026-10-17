@@ -1,7 +1,10 @@
+# Endpoint and credentials come from the OVH_* environment variables.
+provider "ovh" {}
+
 module "valkey" {
   source = "../../"
 
-  service_name       = "your-ovh-project-id"
+  service_name       = var.service_name
   valkey_description = "Production Valkey cluster - Team Platform"
   valkey_version     = "8.1"
   valkey_plan        = "business"
@@ -19,13 +22,13 @@ module "valkey" {
   valkey_nodes = [
     {
       region     = "GRA"
-      network_id = "pn-xxxxxx"
-      subnet_id  = "subnet-yyyyyy"
+      network_id = var.network_id
+      subnet_id  = var.subnet_id
     },
     {
       region     = "GRA"
-      network_id = "pn-xxxxxx"
-      subnet_id  = "subnet-yyyyyy"
+      network_id = var.network_id
+      subnet_id  = var.subnet_id
     },
   ]
 
@@ -49,17 +52,4 @@ module "valkey" {
       keys       = ["*"]
     },
   ]
-}
-
-output "valkey_id" {
-  value = module.valkey.valkey_id
-}
-
-output "endpoints" {
-  value = module.valkey.valkey_endpoints
-}
-
-output "users" {
-  value     = module.valkey.valkey_users
-  sensitive = true
 }

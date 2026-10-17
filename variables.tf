@@ -49,8 +49,8 @@ variable "valkey_disk_size" {
 
   validation {
     condition = (
-      var.valkey_disk_size == null ||
-      (var.valkey_disk_size == floor(var.valkey_disk_size) && var.valkey_disk_size > 0)
+      var.valkey_disk_size == null ? true :
+      var.valkey_disk_size == floor(var.valkey_disk_size) && var.valkey_disk_size > 0
     )
     error_message = "valkey_disk_size must be a positive integer when set."
   }

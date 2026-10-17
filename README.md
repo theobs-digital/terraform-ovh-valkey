@@ -15,7 +15,7 @@
 
 ```hcl
 module "valkey" {
-  source  = "git::https://gitlab.com/theobs-digital/terraform-ovh-valkey.git?ref=v1.0.0"
+  source = "git::https://github.com/theobs-digital/terraform-ovh-valkey.git?ref=v1.0.1"
 
   service_name   = "your-ovh-project-id"
   valkey_version = "8.1"
@@ -35,7 +35,7 @@ module "valkey" {
 
 ```hcl
 module "valkey" {
-  source  = "git::https://gitlab.com/theobs-digital/terraform-ovh-valkey.git?ref=v1.0.0"
+  source = "git::https://github.com/theobs-digital/terraform-ovh-valkey.git?ref=v1.0.1"
 
   service_name       = "your-ovh-project-id"
   valkey_version     = "8.1"
@@ -75,58 +75,189 @@ module "valkey" {
 
 See [examples/basic](examples/basic/) and [examples/complete](examples/complete/) for more.
 
-<!-- BEGIN_TF_DOCS -->
 ## Requirements
 
-| Name | Version |
-|------|---------|
-| terraform | >= 1.3 |
-| ovh | >= 1.0, < 2.0 |
+| | Version | Checked with |
+|---|---|---|
+| Terraform | `>= 1.3` | 1.3.10 and 1.16.5 |
+| Provider [`ovh/ovh`](https://registry.terraform.io/providers/ovh/ovh/latest) | `~> 2.8` | 2.8.0 and 2.22.0 |
 
-## Resources
+## Reference
 
-| Name | Type |
-|------|------|
-| `ovh_cloud_project_database.this` | resource |
-| `ovh_cloud_project_database_valkey_user.user` | resource |
+<!-- BEGIN_TF_DOCS -->
+### Resources
 
-## Inputs
+The following resources are used by this module:
 
-### Required
+- [ovh_cloud_project_database.this](https://registry.terraform.io/providers/ovh/ovh/latest/docs/resources/cloud_project_database) (resource)
+- [ovh_cloud_project_database_valkey_user.user](https://registry.terraform.io/providers/ovh/ovh/latest/docs/resources/cloud_project_database_valkey_user) (resource)
 
-| Name | Description | Type |
-|------|-------------|------|
-| `service_name` | OVH project service name (project ID) | `string` |
-| `valkey_version` | Valkey engine version (format `X.Y`) | `string` |
-| `valkey_plan` | Plan: `essential`, `business`, `enterprise` | `string` |
-| `valkey_flavor` | Flavor (e.g. `b3-8`) | `string` |
-| `valkey_nodes` | List of nodes (min. 2 for HA) | `list(object({region, network_id?, subnet_id?}))` |
+### Required Inputs
 
-### Optional
+The following input variables are required:
 
-| Name | Description | Type | Default |
-|------|-------------|------|---------|
-| `valkey_description` | Database description | `string` | `null` |
-| `valkey_disk_size` | Disk size in GB (positive integer) | `number` | `null` |
-| `valkey_deletion_protection` | Enable deletion protection | `bool` | `true` |
-| `valkey_backup_time` | Backup time in `HH:MM` format (UTC) | `string` | `null` |
-| `valkey_backup_regions` | Regions where backups are stored | `list(string)` | `null` |
-| `valkey_advanced_configuration` | Advanced Valkey configuration (key/value) | `map(string)` | `null` |
-| `valkey_ip_restrictions` | IP restrictions for access | `list(object({ip, description?}))` | `null` |
-| `create_valkey_users` | Enable Valkey user creation | `bool` | `true` |
-| `valkey_users` | Users with ACL configuration (names must be unique) | `list(object({name, categories, channels, commands, keys}))` | `[]` |
+#### <a name="input_service_name"></a> [service\_name](#input\_service\_name)
 
-## Outputs
+Description: OVH project service name (project ID)
 
-| Name | Description | Sensitive |
-|------|-------------|-----------|
-| `valkey_id` | Database ID | no |
-| `valkey_engine` | Database engine | no |
-| `valkey_version` | Valkey version | no |
-| `valkey_endpoints` | Connection endpoints | no |
-| `valkey_nodes` | Nodes configuration | no |
-| `valkey_status` | Current database status | no |
-| `valkey_users` | Created users (includes credentials) | **yes** |
+Type: `string`
+
+#### <a name="input_valkey_flavor"></a> [valkey\_flavor](#input\_valkey\_flavor)
+
+Description: Valkey flavor (e.g. b3-8)
+
+Type: `string`
+
+#### <a name="input_valkey_nodes"></a> [valkey\_nodes](#input\_valkey\_nodes)
+
+Description: List of Valkey nodes (minimum 2 for HA)
+
+Type:
+
+```hcl
+list(object({
+    region     = string
+    network_id = optional(string)
+    subnet_id  = optional(string)
+  }))
+```
+
+#### <a name="input_valkey_plan"></a> [valkey\_plan](#input\_valkey\_plan)
+
+Description: Valkey plan (essential, business, enterprise)
+
+Type: `string`
+
+#### <a name="input_valkey_version"></a> [valkey\_version](#input\_valkey\_version)
+
+Description: Valkey engine version (e.g. 7.2, 8.1)
+
+Type: `string`
+
+### Optional Inputs
+
+The following input variables are optional (have default values):
+
+#### <a name="input_create_valkey_users"></a> [create\_valkey\_users](#input\_create\_valkey\_users)
+
+Description: Enable or disable Valkey user creation
+
+Type: `bool`
+
+Default: `true`
+
+#### <a name="input_valkey_advanced_configuration"></a> [valkey\_advanced\_configuration](#input\_valkey\_advanced\_configuration)
+
+Description: Advanced Valkey configuration (Redis-compatible key/value pairs)
+
+Type: `map(string)`
+
+Default: `null`
+
+#### <a name="input_valkey_backup_regions"></a> [valkey\_backup\_regions](#input\_valkey\_backup\_regions)
+
+Description: List of regions where backups are stored
+
+Type: `list(string)`
+
+Default: `null`
+
+#### <a name="input_valkey_backup_time"></a> [valkey\_backup\_time](#input\_valkey\_backup\_time)
+
+Description: Backup time in HH:MM format (UTC)
+
+Type: `string`
+
+Default: `null`
+
+#### <a name="input_valkey_deletion_protection"></a> [valkey\_deletion\_protection](#input\_valkey\_deletion\_protection)
+
+Description: Enable deletion protection
+
+Type: `bool`
+
+Default: `true`
+
+#### <a name="input_valkey_description"></a> [valkey\_description](#input\_valkey\_description)
+
+Description: Description of the Valkey database
+
+Type: `string`
+
+Default: `null`
+
+#### <a name="input_valkey_disk_size"></a> [valkey\_disk\_size](#input\_valkey\_disk\_size)
+
+Description: Disk size in GB (optional, OVH default if null)
+
+Type: `number`
+
+Default: `null`
+
+#### <a name="input_valkey_ip_restrictions"></a> [valkey\_ip\_restrictions](#input\_valkey\_ip\_restrictions)
+
+Description: List of IP restrictions for Valkey access
+
+Type:
+
+```hcl
+list(object({
+    ip          = string
+    description = optional(string)
+  }))
+```
+
+Default: `null`
+
+#### <a name="input_valkey_users"></a> [valkey\_users](#input\_valkey\_users)
+
+Description: List of Valkey users with ACL configuration
+
+Type:
+
+```hcl
+list(object({
+    name       = string
+    categories = list(string)
+    channels   = list(string)
+    commands   = list(string)
+    keys       = list(string)
+  }))
+```
+
+Default: `[]`
+
+### Outputs
+
+The following outputs are exported:
+
+#### <a name="output_valkey_endpoints"></a> [valkey\_endpoints](#output\_valkey\_endpoints)
+
+Description: Valkey endpoints
+
+#### <a name="output_valkey_engine"></a> [valkey\_engine](#output\_valkey\_engine)
+
+Description: Database engine
+
+#### <a name="output_valkey_id"></a> [valkey\_id](#output\_valkey\_id)
+
+Description: Valkey database ID
+
+#### <a name="output_valkey_nodes"></a> [valkey\_nodes](#output\_valkey\_nodes)
+
+Description: Valkey nodes configuration
+
+#### <a name="output_valkey_status"></a> [valkey\_status](#output\_valkey\_status)
+
+Description: Current Valkey database status
+
+#### <a name="output_valkey_users"></a> [valkey\_users](#output\_valkey\_users)
+
+Description: Created Valkey users
+
+#### <a name="output_valkey_version"></a> [valkey\_version](#output\_valkey\_version)
+
+Description: Valkey version
 <!-- END_TF_DOCS -->
 
 ## Validations

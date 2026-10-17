@@ -1,14 +1,15 @@
-formatter: markdown table
+# Types as HCL blocks: a table squeezes the records type into one unreadable cell.
+formatter: markdown document
 
 output:
   file: README.md
   mode: inject
 
 content: |-
-  {{ .Requirements }}
-  {{ .Providers }}
   {{ .Resources }}
+
   {{ .Inputs }}
+
   {{ .Outputs }}
 
 sort:
@@ -17,4 +18,6 @@ sort:
 
 settings:
   indent: 3
+  # Show the version constraints, not the provider pinned by a local init.
+  lockfile: false
   sensitive: true
