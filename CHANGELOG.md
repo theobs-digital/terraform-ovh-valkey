@@ -7,6 +7,8 @@ and this module adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [1.0.1] - 2026-10-17
+
 ### Fixed
 
 - Provider `ovh/ovh` `~> 2.8`, was `>= 1.0, < 2.0`: `ovh_cloud_project_database_valkey_user` exists only from 2.4.0 and the `deletion_protection` attribute of `ovh_cloud_project_database` from 2.8.0, so 1.0.0 validated with no provider release it allowed
@@ -38,3 +40,7 @@ and this module adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.
 - Input validations (version format, plan, backup time, disk size, user uniqueness)
 - Native Terraform tests (`terraform test`)
 - Examples: basic and complete
+
+[Unreleased]: https://github.com/theobs-digital/terraform-ovh-valkey/compare/v1.0.1...main
+[1.0.1]: https://github.com/theobs-digital/terraform-ovh-valkey/compare/v1.0.0...v1.0.1
+[1.0.0]: https://github.com/theobs-digital/terraform-ovh-valkey/releases/tag/v1.0.0
