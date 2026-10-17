@@ -1,6 +1,4 @@
-provider "ovh" {
-  endpoint = "ovh-eu"
-}
+mock_provider "ovh" {}
 
 variables {
   service_name   = "test-project-id"
@@ -114,7 +112,7 @@ run "reject_duplicate_users" {
         keys       = ["*"]
       },
       {
-        name       = "app-2"
+        name       = "app"
         categories = ["+@all"]
         channels   = ["*"]
         commands   = ["+@read"]
