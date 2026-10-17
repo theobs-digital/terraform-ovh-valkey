@@ -4,22 +4,22 @@ provider "ovh" {}
 module "valkey" {
   source = "../../"
 
-  service_name       = var.service_name
-  valkey_description = "Production Valkey cluster - Team Platform"
-  valkey_version     = "8.1"
-  valkey_plan        = "business"
-  valkey_flavor      = "b3-8"
-  valkey_disk_size   = 100
+  service_name   = var.service_name
+  description    = "Production Valkey cluster - Team Platform"
+  valkey_version = "8.1"
+  plan           = "business"
+  flavor         = "b3-8"
+  disk_size      = 100
 
-  valkey_deletion_protection = true
-  valkey_backup_time         = "03:00"
-  valkey_backup_regions      = ["GRA"]
+  deletion_protection = true
+  backup_time         = "03:00"
+  backup_regions      = ["GRA"]
 
-  valkey_advanced_configuration = {
+  advanced_configuration = {
     "maxmemory-policy" = "allkeys-lru"
   }
 
-  valkey_nodes = [
+  nodes = [
     {
       region     = "GRA"
       network_id = var.network_id
@@ -32,24 +32,24 @@ module "valkey" {
     },
   ]
 
-  valkey_ip_restrictions = [
+  ip_restrictions = [
     { ip = "10.0.0.0/8", description = "Private RFC1918" },
   ]
 
-  valkey_users = [
-    {
+  valkey_users = {
+    app-rw = {
       name       = "app-rw"
       categories = ["+@all"]
       channels   = ["*"]
       commands   = ["+@all"]
       keys       = ["app:*"]
-    },
-    {
+    }
+    monitoring = {
       name       = "monitoring"
       categories = ["+@all"]
       channels   = ["*"]
       commands   = ["+@read"]
       keys       = ["*"]
-    },
-  ]
+    }
+  }
 }

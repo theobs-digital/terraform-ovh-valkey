@@ -3,22 +3,22 @@
 ##############################
 resource "ovh_cloud_project_database" "this" {
   service_name           = var.service_name
-  description            = var.valkey_description
+  description            = var.description
   engine                 = "valkey"
   version                = var.valkey_version
-  plan                   = var.valkey_plan
-  advanced_configuration = var.valkey_advanced_configuration
-  backup_time            = var.valkey_backup_time
-  backup_regions         = var.valkey_backup_regions
-  disk_size              = var.valkey_disk_size
-  deletion_protection    = var.valkey_deletion_protection
-  flavor                 = var.valkey_flavor
+  plan                   = var.plan
+  advanced_configuration = var.advanced_configuration
+  backup_time            = var.backup_time
+  backup_regions         = var.backup_regions
+  disk_size              = var.disk_size
+  deletion_protection    = var.deletion_protection
+  flavor                 = var.flavor
 
   ##############################
   # Nodes
   ##############################
   dynamic "nodes" {
-    for_each = var.valkey_nodes
+    for_each = var.nodes
     content {
       region     = nodes.value.region
       network_id = nodes.value.network_id
@@ -42,7 +42,7 @@ resource "ovh_cloud_project_database" "this" {
 # Valkey Users
 ##############################
 resource "ovh_cloud_project_database_valkey_user" "user" {
-  for_each = local.valkey_users
+  for_each = var.create_valkey_users ? var.valkey_users : {}
 
   service_name = var.service_name
   cluster_id   = ovh_cloud_project_database.this.id

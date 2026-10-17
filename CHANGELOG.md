@@ -7,6 +7,24 @@ and this module adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Changed
+
+- **BREAKING**: variables aligned on the provider's attributes:
+
+  | Before | After |
+  |---|---|
+  | `valkey_description` | `description` |
+  | `valkey_plan` | `plan` |
+  | `valkey_flavor` | `flavor` |
+  | `valkey_disk_size` | `disk_size` |
+  | `valkey_deletion_protection` | `deletion_protection` |
+  | `valkey_backup_time` | `backup_time` |
+  | `valkey_backup_regions` | `backup_regions` |
+  | `valkey_advanced_configuration` | `advanced_configuration` |
+  | `valkey_nodes` | `nodes` |
+  | `valkey_ip_restrictions` | `ip_restrictions` |
+  | `valkey_users`, a list | `valkey_users`, a map: key each user by its `name` to keep it in the state |
+
 ## [1.0.1] - 2026-10-17
 
 ### Fixed
