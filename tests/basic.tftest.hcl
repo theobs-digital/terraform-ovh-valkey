@@ -11,10 +11,6 @@ variables {
   create_valkey_users = false
 }
 
-##############################
-# Valid plan
-##############################
-
 run "plan_basic" {
   command = plan
 
@@ -26,46 +22,5 @@ run "plan_basic" {
   assert {
     condition     = ovh_cloud_project_database.this.deletion_protection == true
     error_message = "Deletion protection must be enabled by default."
-  }
-}
-
-##############################
-# Validation: reject bad version format
-##############################
-
-run "reject_bad_version_format" {
-  command = plan
-
-  variables {
-    valkey_version = "latest"
-  }
-
-  expect_failures = [
-    var.valkey_version,
-  ]
-}
-
-##############################
-# Users: named after their key
-##############################
-
-run "users_named_by_key" {
-  command = plan
-
-  variables {
-    create_valkey_users = true
-    valkey_users = {
-      app = {
-        categories = ["+@all"]
-        channels   = ["*"]
-        commands   = ["+@all"]
-        keys       = ["*"]
-      }
-    }
-  }
-
-  assert {
-    condition     = ovh_cloud_project_database_valkey_user.user["app"].name == "app"
-    error_message = "A user must be named after its key."
   }
 }

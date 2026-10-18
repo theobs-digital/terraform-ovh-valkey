@@ -7,6 +7,16 @@ and this module adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Added
+
+- Tests against the real API, in `tests-real`: a Valkey database `tf-test-ci-valkey` on plan `discovery`, with one `b3-8` node and a user, then a plan that must replace nothing. `terraform test` runs them only when asked
+- The workflow `Real API tests`: runs them on demand, weekly once its schedule is uncommented
+- Example `import`: an existing database and its user brought under the module with `import` blocks
+
+### Changed
+
+- README rewritten in the form of cloudflare-dns
+
 ## [2.0.0] - 2026-10-18
 
 ### Added
