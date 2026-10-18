@@ -7,6 +7,10 @@ and this module adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Added
+
+- The workflow `Release`: the GitHub release of each tag, with its section of this file as notes
+
 ### Changed
 
 - **BREAKING**: variables aligned on the provider's attributes:
