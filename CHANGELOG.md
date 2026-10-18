@@ -7,6 +7,8 @@ and this module adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [2.0.0] - 2026-10-18
+
 ### Added
 
 - The workflow `Release`: the GitHub release of each tag, with its section of this file as notes
@@ -26,6 +28,7 @@ and this module adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.
   | `valkey_nodes` | `nodes` |
   | `valkey_ip_restrictions` | `ip_restrictions` |
   | `valkey_users`, a list | `valkey_users`, a map keyed by the user's name, without `name` in the object: key each user by its current name to keep it in the state |
+
 - Examples and README: plan `discovery` with one node, `production` with two, as OVHcloud sizes them; the advanced parameter `valkey_maxmemory_policy`, was `maxmemory-policy`
 
 ### Removed
@@ -68,6 +71,7 @@ and this module adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.
 - Native Terraform tests (`terraform test`)
 - Examples: basic and complete
 
-[Unreleased]: https://github.com/theobs-digital/terraform-ovh-valkey/compare/v1.0.1...main
+[Unreleased]: https://github.com/theobs-digital/terraform-ovh-valkey/compare/v2.0.0...main
+[2.0.0]: https://github.com/theobs-digital/terraform-ovh-valkey/compare/v1.0.1...v2.0.0
 [1.0.1]: https://github.com/theobs-digital/terraform-ovh-valkey/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/theobs-digital/terraform-ovh-valkey/releases/tag/v1.0.0
