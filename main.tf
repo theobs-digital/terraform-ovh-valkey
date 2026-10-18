@@ -1,6 +1,3 @@
-##############################
-# Valkey Database
-##############################
 resource "ovh_cloud_project_database" "this" {
   service_name           = var.service_name
   description            = var.description
@@ -12,9 +9,6 @@ resource "ovh_cloud_project_database" "this" {
   deletion_protection    = var.deletion_protection
   flavor                 = var.flavor
 
-  ##############################
-  # Nodes
-  ##############################
   dynamic "nodes" {
     for_each = var.nodes
     content {
@@ -24,9 +18,6 @@ resource "ovh_cloud_project_database" "this" {
     }
   }
 
-  ##############################
-  # IP Restrictions
-  ##############################
   dynamic "ip_restrictions" {
     for_each = local.ip_restrictions
     content {
@@ -36,9 +27,6 @@ resource "ovh_cloud_project_database" "this" {
   }
 }
 
-##############################
-# Valkey Users
-##############################
 resource "ovh_cloud_project_database_valkey_user" "user" {
   for_each = var.create_valkey_users ? var.valkey_users : {}
 
