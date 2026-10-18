@@ -16,6 +16,7 @@ and this module adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.
 ### Changed
 
 - README rewritten in the form of cloudflare-dns
+- The workflow `Release` tags each version itself: on each push to `main`, the version the commit types call for (Conventional Commits), with this section dated, the `?ref=` of the README bumped, a `chore: release vX.Y.Z` commit tagged, and its GitHub release; a tag pushed by hand also gets its release
 
 ## [2.0.0] - 2026-10-18
 
