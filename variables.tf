@@ -10,23 +10,19 @@ variable "description" {
 }
 
 variable "valkey_version" {
-  description = "Valkey engine version, such as `7.2` or `8.1`."
+  description = "Valkey engine version, such as `8.1` or `9.1`."
   type        = string
 
+  # Provider 2.22 takes any string, while OVHcloud lists Valkey versions as major.minor, such as 8.1.
   validation {
     condition     = can(regex("^\\d+\\.\\d+$", var.valkey_version))
-    error_message = "valkey_version must follow the format 'X.Y' (e.g. 7.2, 8.1)."
+    error_message = "valkey_version must follow the format 'X.Y' (e.g. 8.1)."
   }
 }
 
 variable "plan" {
-  description = "Valkey plan: `essential`, `business` or `enterprise`."
+  description = "Valkey plan, such as `discovery` or `production`."
   type        = string
-
-  validation {
-    condition     = contains(["essential", "business", "enterprise"], var.plan)
-    error_message = "plan must be one of: essential, business, enterprise."
-  }
 }
 
 variable "flavor" {
@@ -34,35 +30,11 @@ variable "flavor" {
   type        = string
 }
 
-variable "disk_size" {
-  description = "Disk size in GB (optional, OVH default if `null`)."
-  type        = number
-  default     = null
-
-  validation {
-    condition = (
-      var.disk_size == null ? true :
-      var.disk_size == floor(var.disk_size) && var.disk_size > 0
-    )
-    error_message = "disk_size must be a positive integer when set."
-  }
-}
-
 variable "deletion_protection" {
   description = "Whether deletion protection is enabled."
   type        = bool
-  default     = true
-}
-
-variable "backup_time" {
-  description = "Backup time in `HH:MM` format (UTC)."
-  type        = string
-  default     = null
-
-  validation {
-    condition     = var.backup_time == null || can(regex("^([01]\\d|2[0-3]):[0-5]\\d$", var.backup_time))
-    error_message = "backup_time must follow HH:MM format (e.g. 03:00)."
-  }
+  # Protected unless asked: provider 2.22 leaves the database unprotected when unset.
+  default = true
 }
 
 variable "backup_regions" {
@@ -72,23 +44,18 @@ variable "backup_regions" {
 }
 
 variable "advanced_configuration" {
-  description = "Advanced Valkey configuration (Redis-compatible key/value pairs)."
+  description = "Advanced Valkey parameters of OVHcloud, such as `valkey_maxmemory_policy`."
   type        = map(string)
   default     = null
 }
 
 variable "nodes" {
-  description = "List of Valkey nodes (minimum 2 for HA)."
+  description = "Valkey nodes, as many as the plan requires, such as 1 for `discovery` and 2 for `production`."
   type = list(object({
     region     = string
     network_id = optional(string)
     subnet_id  = optional(string)
   }))
-
-  validation {
-    condition     = length(var.nodes) >= 2
-    error_message = "At least two Valkey nodes must be defined for high availability."
-  }
 }
 
 variable "ip_restrictions" {
@@ -107,18 +74,12 @@ variable "create_valkey_users" {
 }
 
 variable "valkey_users" {
-  description = "Valkey users with ACL configuration, by a key of your choice. The key only names the user in the state: keep it stable, since renaming a key replaces the user."
+  description = "Valkey users with their ACL, by name: the key is the user's `name`, so renaming a key replaces the user."
   type = map(object({
-    name       = string
     categories = list(string)
     channels   = list(string)
     commands   = list(string)
     keys       = list(string)
   }))
   default = {}
-
-  validation {
-    condition     = length(var.valkey_users) == length(distinct([for u in var.valkey_users : u.name]))
-    error_message = "User names must be unique."
-  }
 }

@@ -3,10 +3,9 @@ mock_provider "ovh" {}
 variables {
   service_name   = "test-project-id"
   valkey_version = "8.1"
-  plan           = "essential"
+  plan           = "discovery"
   flavor         = "b3-8"
   nodes = [
-    { region = "GRA" },
     { region = "GRA" },
   ]
   create_valkey_users = false
@@ -31,22 +30,6 @@ run "plan_basic" {
 }
 
 ##############################
-# Validation: reject single node
-##############################
-
-run "reject_single_node" {
-  command = plan
-
-  variables {
-    nodes = [{ region = "GRA" }]
-  }
-
-  expect_failures = [
-    var.nodes,
-  ]
-}
-
-##############################
 # Validation: reject bad version format
 ##############################
 
@@ -63,81 +46,26 @@ run "reject_bad_version_format" {
 }
 
 ##############################
-# Validation: reject invalid plan name
+# Users: named after their key
 ##############################
 
-run "reject_invalid_plan" {
-  command = plan
-
-  variables {
-    plan = "free-tier"
-  }
-
-  expect_failures = [
-    var.plan,
-  ]
-}
-
-##############################
-# Validation: reject bad backup time
-##############################
-
-run "reject_bad_backup_time" {
-  command = plan
-
-  variables {
-    backup_time = "25:00"
-  }
-
-  expect_failures = [
-    var.backup_time,
-  ]
-}
-
-##############################
-# Validation: reject duplicate user names
-##############################
-
-run "reject_duplicate_users" {
+run "users_named_by_key" {
   command = plan
 
   variables {
     create_valkey_users = true
     valkey_users = {
-      app-all = {
-        name       = "app"
+      app = {
         categories = ["+@all"]
         channels   = ["*"]
         commands   = ["+@all"]
         keys       = ["*"]
       }
-      app-read = {
-        name       = "app"
-        categories = ["+@all"]
-        channels   = ["*"]
-        commands   = ["+@read"]
-        keys       = ["*"]
-      }
     }
   }
 
-  expect_failures = [
-    var.valkey_users,
-  ]
-}
-
-##############################
-# Validation: reject negative disk size
-##############################
-
-run "reject_negative_disk_size" {
-  command = plan
-
-  variables {
-    disk_size = -10
+  assert {
+    condition     = ovh_cloud_project_database_valkey_user.user["app"].name == "app"
+    error_message = "A user must be named after its key."
   }
-
-  expect_failures = [
-    var.disk_size,
-  ]
 }

@@ -7,16 +7,14 @@ module "valkey" {
   service_name   = var.service_name
   description    = "Production Valkey cluster - Team Platform"
   valkey_version = "8.1"
-  plan           = "business"
+  plan           = "production"
   flavor         = "b3-8"
-  disk_size      = 100
 
   deletion_protection = true
-  backup_time         = "03:00"
   backup_regions      = ["GRA"]
 
   advanced_configuration = {
-    "maxmemory-policy" = "allkeys-lru"
+    valkey_maxmemory_policy = "allkeys-lru"
   }
 
   nodes = [
@@ -38,14 +36,12 @@ module "valkey" {
 
   valkey_users = {
     app-rw = {
-      name       = "app-rw"
       categories = ["+@all"]
       channels   = ["*"]
       commands   = ["+@all"]
       keys       = ["app:*"]
     }
     monitoring = {
-      name       = "monitoring"
       categories = ["+@all"]
       channels   = ["*"]
       commands   = ["+@read"]

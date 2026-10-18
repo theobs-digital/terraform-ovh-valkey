@@ -8,9 +8,7 @@ resource "ovh_cloud_project_database" "this" {
   version                = var.valkey_version
   plan                   = var.plan
   advanced_configuration = var.advanced_configuration
-  backup_time            = var.backup_time
   backup_regions         = var.backup_regions
-  disk_size              = var.disk_size
   deletion_protection    = var.deletion_protection
   flavor                 = var.flavor
 
@@ -51,5 +49,5 @@ resource "ovh_cloud_project_database_valkey_user" "user" {
   channels   = each.value.channels
   commands   = each.value.commands
   keys       = each.value.keys
-  name       = each.value.name
+  name       = each.key
 }

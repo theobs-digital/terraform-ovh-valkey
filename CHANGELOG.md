@@ -16,14 +16,19 @@ and this module adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.
   | `valkey_description` | `description` |
   | `valkey_plan` | `plan` |
   | `valkey_flavor` | `flavor` |
-  | `valkey_disk_size` | `disk_size` |
   | `valkey_deletion_protection` | `deletion_protection` |
-  | `valkey_backup_time` | `backup_time` |
   | `valkey_backup_regions` | `backup_regions` |
   | `valkey_advanced_configuration` | `advanced_configuration` |
   | `valkey_nodes` | `nodes` |
   | `valkey_ip_restrictions` | `ip_restrictions` |
-  | `valkey_users`, a list | `valkey_users`, a map: key each user by its `name` to keep it in the state |
+  | `valkey_users`, a list | `valkey_users`, a map keyed by the user's name, without `name` in the object: key each user by its current name to keep it in the state |
+- Examples and README: plan `discovery` with one node, `production` with two, as OVHcloud sizes them; the advanced parameter `valkey_maxmemory_policy`, was `maxmemory-policy`
+
+### Removed
+
+- **BREAKING**: `valkey_disk_size` and `valkey_backup_time`. OVHcloud resizes storage only for the engines that use it, and lets the backup time be set only for MongoDB, MySQL and PostgreSQL; Valkey is backed up every 12 hours
+- The validations of `plan` and `nodes`: they refused `discovery` and `production`, offered by OVHcloud, and every single-node plan
+- The validation of unique user names: the map key is the name
 
 ## [1.0.1] - 2026-10-17
 
