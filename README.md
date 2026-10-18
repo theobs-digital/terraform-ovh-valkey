@@ -56,7 +56,7 @@ module "valkey" {
     { region = "GRA" },
   ]
 
-  # The IP blocks authorized to access the database.
+  # The IP blocks authorized to access the database: without one, it is unreachable.
   ip_restrictions = [
     { ip = "203.0.113.10/32", description = "Workstation" },
   ]
@@ -164,9 +164,12 @@ advanced_configuration = { valkey_maxmemory_policy = "allkeys-lru" }
 `8.1`: the provider takes any string, so the module refuses any other format
 at plan, such as `latest`.
 
-**`plan`**: OVHcloud sizes `discovery` with one node and `production` with
-two. The provider's documentation lists `essential` and `business` for
-Valkey.
+**`plan`**: OVHcloud offers two plans for Valkey, according to its
+[capabilities page](https://docs.ovhcloud.com/en/guides/public-cloud/databases/valkey-capabilities) of 13 October 2026:
+`discovery`, one node, whose backups are kept 1 day, and `production`, two
+nodes, a primary and a replica, whose backups are kept 3 days. The
+provider's documentation still lists `essential` and `business`, which the
+page no longer names.
 
 **`deletion_protection`** is on unless you set it to `false`: the provider
 leaves a database unprotected when it is unset. To destroy the database,
@@ -197,9 +200,14 @@ nodes = [
 ]
 ```
 
-`network_id` is the regional OpenStack ID of the private network (vRack).
-The module creates no network: a dedicated network module, or another
-configuration, provides it. `network_id` and `subnet_id` change in place,
+`network_id` is the OpenStack ID of the private network (vRack) in the
+region of the nodes, not its `pn-…` ID: with
+`ovh_cloud_project_network_private`, the `openstackid` of that region in
+`regions_attributes`, which `regions_openstack_ids` also gives by region. A
+network names its regions as OpenStack does, such as `GRA11`, and a database
+as `GRA`, and OVHcloud does not document how they match: choose the region
+of the network yourself. The module creates no network: a dedicated network
+module, or another configuration, provides it. `network_id` and `subnet_id` change in place,
 without replacing the database, but OVHcloud rebuilds it, see
 [Watch out](#watch-out).
 
@@ -212,7 +220,10 @@ ip_restrictions = [
 ```
 
 The IP blocks authorized to access the database, each with an optional
-description. Leave the input out, and the module sends none.
+description. Leave the input out, and the module sends none: the database is
+then unreachable, since OVHcloud lets no traffic in until an IP block is
+authorized ("Until then, your service will be unreachable", section
+Authorised IPs of the [capabilities page](https://docs.ovhcloud.com/en/guides/public-cloud/databases/valkey-capabilities)).
 
 ### Users
 
@@ -278,6 +289,9 @@ sensitive output `valkey_users` gives, such as
 
 **🟠 Surprises at apply**
 
+- **A database without `ip_restrictions`** is created, but unreachable:
+  OVHcloud lets no traffic in until an IP block is authorized. See
+  [IP restrictions](#ip-restrictions).
 - **A destroy with `deletion_protection = true`**, the default, fails: set it
   to `false` and apply first.
 - **`backup_regions`** takes at most two regions, one of them the region of
@@ -591,20 +605,26 @@ and its `basic` and `complete` examples with Terraform 1.3.10 and provider
 
 ### Real API tests
 
-The mock tests cannot see what OVHcloud does with a value. The tests in
-`tests-real` create a Valkey database `tf-test-ci-valkey` on plan
-`discovery`, with one `b3-8` node in `GRA` and the user `tf-test-ci`, plan
-again, which must replace nothing, then destroy it. Its deletion protection
-stays off.
+The mock tests cannot see what OVHcloud does with a value. `tests-real` is a
+configuration that calls the module: a Valkey database `tf-test-ci-valkey`
+on plan `discovery`, with one `b3-8` node in `GRA` and the user
+`tf-test-ci`, its deletion protection off. Apply it, plan it again, which
+must show no change, then destroy it.
 
 ```bash
+cd tests-real
 export OVH_ENDPOINT=ovh-eu OVH_APPLICATION_KEY=... OVH_APPLICATION_SECRET=... OVH_CONSUMER_KEY=...
 export TF_VAR_service_name=... TF_VAR_valkey_version=8.1
-terraform test -test-directory=tests-real
+terraform init
+terraform apply
+terraform plan -detailed-exitcode
+terraform destroy
 ```
 
-The [Real API tests](.github/workflows/tests-real.yml) workflow runs them on
-demand, from the Actions tab. Its weekly schedule, on Mondays at 05:00 UTC,
+A second plan with a change is a provider that drifts from what it applied.
+The [Real API tests](.github/workflows/tests-real.yml) workflow runs the
+same on demand, from the Actions tab, and destroys the database even when a
+step fails. Its weekly schedule, on Mondays at 05:00 UTC,
 stays commented out until the test project and these repository secrets
 exist:
 
@@ -615,8 +635,9 @@ exist:
 | `TEST_SERVICE_NAME` | the ID of the test Public Cloud project |
 | `TEST_VALKEY_VERSION` | a Valkey version that OVHcloud offers, such as `8.1` |
 
-A run cut short leaves the database `tf-test-ci-valkey` behind: delete it by
-hand. The workflow cannot, since each call to the OVHcloud API is signed.
+A destroy that fails leaves the database `tf-test-ci-valkey` behind: delete
+it by hand. The workflow has no cleanup step, since each call to the
+OVHcloud API is signed.
 
 ### Release
 

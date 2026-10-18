@@ -2,7 +2,9 @@
 
 Creates a Valkey 8.1 database on plan `discovery`, with one `b3-8` node in
 `GRA` on the public network, and no user. The module defaults apply to
-everything else, deletion protection included.
+everything else, deletion protection included. Without `ip_restrictions`,
+the database is unreachable: see the module's
+[IP restrictions](../../README.md#ip-restrictions).
 
 ```bash
 export OVH_ENDPOINT=ovh-eu OVH_CLIENT_ID=... OVH_CLIENT_SECRET=...
