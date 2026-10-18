@@ -4,7 +4,7 @@ variable "service_name" {
 }
 
 variable "network_id" {
-  description = "ID of the private network (vRack) the nodes join."
+  description = "OpenStack ID of the private network (vRack) in the region of the nodes, not its `pn-…` ID: the `openstackid` of that region in `regions_attributes` of `ovh_cloud_project_network_private`."
   type        = string
 }
 

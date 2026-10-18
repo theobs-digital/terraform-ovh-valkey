@@ -9,8 +9,8 @@ and this module adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.
 
 ### Added
 
-- Tests against the real API, in `tests-real`: a Valkey database `tf-test-ci-valkey` on plan `discovery`, with one `b3-8` node and a user, then a plan that must replace nothing. `terraform test` runs them only when asked
-- The workflow `Real API tests`: runs them on demand, weekly once its schedule is uncommented
+- Tests against the real API, in `tests-real`: a configuration that calls the module, a Valkey database `tf-test-ci-valkey` on plan `discovery` with one `b3-8` node and a user, applied, planned again, which must show no change, then destroyed
+- The workflow `Real API tests`: runs them on demand, weekly once its schedule is uncommented, and destroys the database even when a step fails
 - Example `import`: an existing database and its user brought under the module with `import` blocks
 
 ### Changed
