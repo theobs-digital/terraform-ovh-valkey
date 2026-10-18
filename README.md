@@ -19,10 +19,10 @@ module "valkey" {
 
   service_name   = "your-ovh-project-id"
   valkey_version = "8.1"
-  valkey_plan    = "essential"
-  valkey_flavor  = "b3-8"
+  plan           = "essential"
+  flavor         = "b3-8"
 
-  valkey_nodes = [
+  nodes = [
     { region = "GRA" },
     { region = "GRA" },
   ]
@@ -37,14 +37,14 @@ module "valkey" {
 module "valkey" {
   source = "git::https://github.com/theobs-digital/terraform-ovh-valkey.git?ref=v1.0.1"
 
-  service_name       = "your-ovh-project-id"
-  valkey_version     = "8.1"
-  valkey_plan        = "business"
-  valkey_flavor      = "b3-8"
-  valkey_description = "Production Valkey cluster"
-  valkey_disk_size   = 100
+  service_name   = "your-ovh-project-id"
+  valkey_version = "8.1"
+  plan           = "business"
+  flavor         = "b3-8"
+  description    = "Production Valkey cluster"
+  disk_size      = 100
 
-  valkey_nodes = [
+  nodes = [
     {
       region     = "GRA"
       network_id = "pn-xxxxxx"
@@ -57,19 +57,19 @@ module "valkey" {
     },
   ]
 
-  valkey_ip_restrictions = [
+  ip_restrictions = [
     { ip = "10.0.0.0/24", description = "Internal network" },
   ]
 
-  valkey_users = [
-    {
+  valkey_users = {
+    app = {
       name       = "app"
       categories = ["+@all"]
       channels   = ["*"]
       commands   = ["+@all"]
       keys       = ["*"]
-    },
-  ]
+    }
+  }
 }
 ```
 
@@ -96,21 +96,15 @@ The following resources are used by this module:
 
 The following input variables are required:
 
-#### <a name="input_service_name"></a> [service\_name](#input\_service\_name)
+#### <a name="input_flavor"></a> [flavor](#input\_flavor)
 
-Description: OVH project service name (project ID)
-
-Type: `string`
-
-#### <a name="input_valkey_flavor"></a> [valkey\_flavor](#input\_valkey\_flavor)
-
-Description: Valkey flavor (e.g. b3-8)
+Description: Valkey flavor, such as `b3-8`.
 
 Type: `string`
 
-#### <a name="input_valkey_nodes"></a> [valkey\_nodes](#input\_valkey\_nodes)
+#### <a name="input_nodes"></a> [nodes](#input\_nodes)
 
-Description: List of Valkey nodes (minimum 2 for HA)
+Description: List of Valkey nodes (minimum 2 for HA).
 
 Type:
 
@@ -122,15 +116,21 @@ list(object({
   }))
 ```
 
-#### <a name="input_valkey_plan"></a> [valkey\_plan](#input\_valkey\_plan)
+#### <a name="input_plan"></a> [plan](#input\_plan)
 
-Description: Valkey plan (essential, business, enterprise)
+Description: Valkey plan: `essential`, `business` or `enterprise`.
+
+Type: `string`
+
+#### <a name="input_service_name"></a> [service\_name](#input\_service\_name)
+
+Description: OVH project service name (project ID).
 
 Type: `string`
 
 #### <a name="input_valkey_version"></a> [valkey\_version](#input\_valkey\_version)
 
-Description: Valkey engine version (e.g. 7.2, 8.1)
+Description: Valkey engine version, such as `7.2` or `8.1`.
 
 Type: `string`
 
@@ -138,65 +138,65 @@ Type: `string`
 
 The following input variables are optional (have default values):
 
-#### <a name="input_create_valkey_users"></a> [create\_valkey\_users](#input\_create\_valkey\_users)
+#### <a name="input_advanced_configuration"></a> [advanced\_configuration](#input\_advanced\_configuration)
 
-Description: Enable or disable Valkey user creation
-
-Type: `bool`
-
-Default: `true`
-
-#### <a name="input_valkey_advanced_configuration"></a> [valkey\_advanced\_configuration](#input\_valkey\_advanced\_configuration)
-
-Description: Advanced Valkey configuration (Redis-compatible key/value pairs)
+Description: Advanced Valkey configuration (Redis-compatible key/value pairs).
 
 Type: `map(string)`
 
 Default: `null`
 
-#### <a name="input_valkey_backup_regions"></a> [valkey\_backup\_regions](#input\_valkey\_backup\_regions)
+#### <a name="input_backup_regions"></a> [backup\_regions](#input\_backup\_regions)
 
-Description: List of regions where backups are stored
+Description: List of regions where backups are stored.
 
 Type: `list(string)`
 
 Default: `null`
 
-#### <a name="input_valkey_backup_time"></a> [valkey\_backup\_time](#input\_valkey\_backup\_time)
+#### <a name="input_backup_time"></a> [backup\_time](#input\_backup\_time)
 
-Description: Backup time in HH:MM format (UTC)
+Description: Backup time in `HH:MM` format (UTC).
 
 Type: `string`
 
 Default: `null`
 
-#### <a name="input_valkey_deletion_protection"></a> [valkey\_deletion\_protection](#input\_valkey\_deletion\_protection)
+#### <a name="input_create_valkey_users"></a> [create\_valkey\_users](#input\_create\_valkey\_users)
 
-Description: Enable deletion protection
+Description: Whether the module creates Valkey users.
 
 Type: `bool`
 
 Default: `true`
 
-#### <a name="input_valkey_description"></a> [valkey\_description](#input\_valkey\_description)
+#### <a name="input_deletion_protection"></a> [deletion\_protection](#input\_deletion\_protection)
 
-Description: Description of the Valkey database
+Description: Whether deletion protection is enabled.
+
+Type: `bool`
+
+Default: `true`
+
+#### <a name="input_description"></a> [description](#input\_description)
+
+Description: Description of the Valkey database.
 
 Type: `string`
 
 Default: `null`
 
-#### <a name="input_valkey_disk_size"></a> [valkey\_disk\_size](#input\_valkey\_disk\_size)
+#### <a name="input_disk_size"></a> [disk\_size](#input\_disk\_size)
 
-Description: Disk size in GB (optional, OVH default if null)
+Description: Disk size in GB (optional, OVH default if `null`).
 
 Type: `number`
 
 Default: `null`
 
-#### <a name="input_valkey_ip_restrictions"></a> [valkey\_ip\_restrictions](#input\_valkey\_ip\_restrictions)
+#### <a name="input_ip_restrictions"></a> [ip\_restrictions](#input\_ip\_restrictions)
 
-Description: List of IP restrictions for Valkey access
+Description: List of IP restrictions for Valkey access.
 
 Type:
 
@@ -211,12 +211,12 @@ Default: `null`
 
 #### <a name="input_valkey_users"></a> [valkey\_users](#input\_valkey\_users)
 
-Description: List of Valkey users with ACL configuration
+Description: Valkey users with ACL configuration, by a key of your choice. The key only names the user in the state: keep it stable, since renaming a key replaces the user.
 
 Type:
 
 ```hcl
-list(object({
+map(object({
     name       = string
     categories = list(string)
     channels   = list(string)
@@ -225,7 +225,7 @@ list(object({
   }))
 ```
 
-Default: `[]`
+Default: `{}`
 
 ### Outputs
 
@@ -267,10 +267,10 @@ The module enforces the following rules at `terraform plan` time:
 | Variable | Rule |
 |----------|------|
 | `valkey_version` | Must match format `X.Y` |
-| `valkey_plan` | Must be `essential`, `business`, or `enterprise` |
-| `valkey_nodes` | Minimum 2 nodes |
-| `valkey_disk_size` | Positive integer when set |
-| `valkey_backup_time` | `HH:MM` format when set |
+| `plan` | Must be `essential`, `business`, or `enterprise` |
+| `nodes` | Minimum 2 nodes |
+| `disk_size` | Positive integer when set |
+| `backup_time` | `HH:MM` format when set |
 | `valkey_users` | Names must be unique |
 
 ## Tests

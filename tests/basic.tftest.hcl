@@ -3,9 +3,9 @@ mock_provider "ovh" {}
 variables {
   service_name   = "test-project-id"
   valkey_version = "8.1"
-  valkey_plan    = "essential"
-  valkey_flavor  = "b3-8"
-  valkey_nodes = [
+  plan           = "essential"
+  flavor         = "b3-8"
+  nodes = [
     { region = "GRA" },
     { region = "GRA" },
   ]
@@ -38,11 +38,11 @@ run "reject_single_node" {
   command = plan
 
   variables {
-    valkey_nodes = [{ region = "GRA" }]
+    nodes = [{ region = "GRA" }]
   }
 
   expect_failures = [
-    var.valkey_nodes,
+    var.nodes,
   ]
 }
 
@@ -70,11 +70,11 @@ run "reject_invalid_plan" {
   command = plan
 
   variables {
-    valkey_plan = "free-tier"
+    plan = "free-tier"
   }
 
   expect_failures = [
-    var.valkey_plan,
+    var.plan,
   ]
 }
 
@@ -86,11 +86,11 @@ run "reject_bad_backup_time" {
   command = plan
 
   variables {
-    valkey_backup_time = "25:00"
+    backup_time = "25:00"
   }
 
   expect_failures = [
-    var.valkey_backup_time,
+    var.backup_time,
   ]
 }
 
@@ -103,22 +103,22 @@ run "reject_duplicate_users" {
 
   variables {
     create_valkey_users = true
-    valkey_users = [
-      {
+    valkey_users = {
+      app-all = {
         name       = "app"
         categories = ["+@all"]
         channels   = ["*"]
         commands   = ["+@all"]
         keys       = ["*"]
-      },
-      {
+      }
+      app-read = {
         name       = "app"
         categories = ["+@all"]
         channels   = ["*"]
         commands   = ["+@read"]
         keys       = ["*"]
-      },
-    ]
+      }
+    }
   }
 
   expect_failures = [
@@ -134,10 +134,10 @@ run "reject_negative_disk_size" {
   command = plan
 
   variables {
-    valkey_disk_size = -10
+    disk_size = -10
   }
 
   expect_failures = [
-    var.valkey_disk_size,
+    var.disk_size,
   ]
 }

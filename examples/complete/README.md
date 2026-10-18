@@ -13,5 +13,5 @@ terraform apply \
   -var subnet_id=<subnet ID>
 ```
 
-Deletion protection is on: set `valkey_deletion_protection = false` and apply
+Deletion protection is on: set `deletion_protection = false` and apply
 before `terraform destroy`.
