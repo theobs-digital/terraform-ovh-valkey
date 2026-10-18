@@ -6,11 +6,10 @@ module "valkey" {
 
   service_name   = var.service_name
   valkey_version = "8.1"
-  plan           = "essential"
+  plan           = "discovery"
   flavor         = "b3-8"
 
   nodes = [
-    { region = "GRA" },
     { region = "GRA" },
   ]
 

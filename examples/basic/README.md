@@ -1,6 +1,6 @@
 # Basic example
 
-Creates a Valkey 8.1 database on plan `essential`, with two `b3-8` nodes in
+Creates a Valkey 8.1 database on plan `discovery`, with one `b3-8` node in
 `GRA` on the public network, and no user. The module defaults apply to
 everything else, deletion protection included.
 

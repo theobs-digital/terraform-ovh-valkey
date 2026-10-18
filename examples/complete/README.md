@@ -1,8 +1,8 @@
 # Complete example
 
-Creates a Valkey 8.1 database on plan `business`, with two nodes in an
-existing private network (vRack), a 100 GB disk, daily backups at 03:00 UTC,
-an advanced setting, an IP restriction, and two users with their ACL.
+Creates a Valkey 8.1 database on plan `production`, with two nodes in an
+existing private network (vRack), backups kept in `GRA`, an advanced setting,
+an IP restriction, and two users with their ACL.
 
 ```bash
 export OVH_ENDPOINT=ovh-eu OVH_CLIENT_ID=... OVH_CLIENT_SECRET=...

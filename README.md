@@ -15,15 +15,14 @@
 
 ```hcl
 module "valkey" {
-  source = "git::https://github.com/theobs-digital/terraform-ovh-valkey.git?ref=v1.0.1"
+  source = "git::https://github.com/theobs-digital/terraform-ovh-valkey.git?ref=v2.0.0"
 
   service_name   = "your-ovh-project-id"
   valkey_version = "8.1"
-  plan           = "essential"
+  plan           = "discovery"
   flavor         = "b3-8"
 
   nodes = [
-    { region = "GRA" },
     { region = "GRA" },
   ]
 
@@ -35,14 +34,13 @@ module "valkey" {
 
 ```hcl
 module "valkey" {
-  source = "git::https://github.com/theobs-digital/terraform-ovh-valkey.git?ref=v1.0.1"
+  source = "git::https://github.com/theobs-digital/terraform-ovh-valkey.git?ref=v2.0.0"
 
   service_name   = "your-ovh-project-id"
   valkey_version = "8.1"
-  plan           = "business"
+  plan           = "production"
   flavor         = "b3-8"
   description    = "Production Valkey cluster"
-  disk_size      = 100
 
   nodes = [
     {
@@ -63,7 +61,6 @@ module "valkey" {
 
   valkey_users = {
     app = {
-      name       = "app"
       categories = ["+@all"]
       channels   = ["*"]
       commands   = ["+@all"]
@@ -104,7 +101,7 @@ Type: `string`
 
 #### <a name="input_nodes"></a> [nodes](#input\_nodes)
 
-Description: List of Valkey nodes (minimum 2 for HA).
+Description: Valkey nodes, as many as the plan requires, such as 1 for `discovery` and 2 for `production`.
 
 Type:
 
@@ -118,7 +115,7 @@ list(object({
 
 #### <a name="input_plan"></a> [plan](#input\_plan)
 
-Description: Valkey plan: `essential`, `business` or `enterprise`.
+Description: Valkey plan, such as `discovery` or `production`.
 
 Type: `string`
 
@@ -130,7 +127,7 @@ Type: `string`
 
 #### <a name="input_valkey_version"></a> [valkey\_version](#input\_valkey\_version)
 
-Description: Valkey engine version, such as `7.2` or `8.1`.
+Description: Valkey engine version, such as `8.1` or `9.1`.
 
 Type: `string`
 
@@ -140,7 +137,7 @@ The following input variables are optional (have default values):
 
 #### <a name="input_advanced_configuration"></a> [advanced\_configuration](#input\_advanced\_configuration)
 
-Description: Advanced Valkey configuration (Redis-compatible key/value pairs).
+Description: Advanced Valkey parameters of OVHcloud, such as `valkey_maxmemory_policy`.
 
 Type: `map(string)`
 
@@ -151,14 +148,6 @@ Default: `null`
 Description: List of regions where backups are stored.
 
 Type: `list(string)`
-
-Default: `null`
-
-#### <a name="input_backup_time"></a> [backup\_time](#input\_backup\_time)
-
-Description: Backup time in `HH:MM` format (UTC).
-
-Type: `string`
 
 Default: `null`
 
@@ -186,14 +175,6 @@ Type: `string`
 
 Default: `null`
 
-#### <a name="input_disk_size"></a> [disk\_size](#input\_disk\_size)
-
-Description: Disk size in GB (optional, OVH default if `null`).
-
-Type: `number`
-
-Default: `null`
-
 #### <a name="input_ip_restrictions"></a> [ip\_restrictions](#input\_ip\_restrictions)
 
 Description: List of IP restrictions for Valkey access.
@@ -211,13 +192,12 @@ Default: `null`
 
 #### <a name="input_valkey_users"></a> [valkey\_users](#input\_valkey\_users)
 
-Description: Valkey users with ACL configuration, by a key of your choice. The key only names the user in the state: keep it stable, since renaming a key replaces the user.
+Description: Valkey users with their ACL, by name: the key is the user's `name`, so renaming a key replaces the user.
 
 Type:
 
 ```hcl
 map(object({
-    name       = string
     categories = list(string)
     channels   = list(string)
     commands   = list(string)
@@ -267,11 +247,6 @@ The module enforces the following rules at `terraform plan` time:
 | Variable | Rule |
 |----------|------|
 | `valkey_version` | Must match format `X.Y` |
-| `plan` | Must be `essential`, `business`, or `enterprise` |
-| `nodes` | Minimum 2 nodes |
-| `disk_size` | Positive integer when set |
-| `backup_time` | `HH:MM` format when set |
-| `valkey_users` | Names must be unique |
 
 ## Tests
 
